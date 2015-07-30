@@ -1,0 +1,31 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_streetView"
+        android:orderInCategory="100"
+        android:title="StreetView"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/intent_launchGmap"
+        android:orderInCategory="100"
+        android:title="LaunchMapApp"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/intent_launchGmapStreetView"
+        android:orderInCategory="100"
+        android:title="LaunchMapForStreetView"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/litemode"
+        android:orderInCategory="100"
+        android:title="Lite Mode"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/indoorMap"
+        android:orderInCategory="100"
+        android:title="Indoor Map"
+        app:showAsAction="never" />
+
+</menu>
