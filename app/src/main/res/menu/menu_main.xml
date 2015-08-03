@@ -19,13 +19,19 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/litemode"
-        android:orderInCategory="100"
         android:title="Lite Mode"
         app:showAsAction="never" />
     <item
         android:id="@+id/indoorMap"
-        android:orderInCategory="100"
         android:title="Indoor Map"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/groundOverlaymenu"
+        android:title="Ground Overlay"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/polygonMenu"
+        android:title="Polygon"
         app:showAsAction="never" />
 
 </menu>

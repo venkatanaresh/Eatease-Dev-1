@@ -1,6 +1,7 @@
 package com.example.android.eatease_dev_1;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -13,11 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -27,9 +31,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapsActivity extends ActionBarActivity implements OnMapReadyCallback {
 
@@ -52,6 +64,8 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
 
 
         //SupportMapFragment mMapFragment = SupportMapFragment.newInstance();
+
+
     }
 
 
@@ -146,8 +160,15 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(12.9667, 77.5667), 13));
         mMap.addMarker(new MarkerOptions().position(new LatLng(12.9667, 77.5667))
                         .title("Bangalore")
-                        .snippet("The most populous city in Karnataka.")
+                        .snippet("Simple example about Marker")
+
         );
+      mMap.addPolyline(new PolylineOptions()
+              .add(new LatLng(-37.81319, 144.96298), new LatLng(-31.95285, 115.85734))
+              .width(25)
+              .color(Color.BLUE)
+              .geodesic(true));
+
     }
 
 
@@ -155,46 +176,24 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         googleMap.setMyLocationEnabled(true);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(12.9568, 77.5668), 13));
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(12.9568, 77.5668))
-                        .title("Bangalore")
-                        .snippet("The most populous city in India.")
-                        .draggable(true)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                        .alpha(0.7f)
-                        .flat(true)
+        Marker marker = googleMap.addMarker(new MarkerOptions().position(new LatLng(12.9568, 77.5668))
+                .title("Bangalore")
+                .snippet("Simple example about Customized Marker")
+                .draggable(true)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                .alpha(0.7f)
+                .flat(true)
+
         );
-          googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        marker.showInfoWindow();
+        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.getUiSettings().setCompassEnabled(true);
         googleMap.getUiSettings().setIndoorLevelPickerEnabled(true);
         googleMap.getUiSettings().setMapToolbarEnabled(true);
         googleMap.getUiSettings().setRotateGesturesEnabled(true);
-        //googleMap.getUiSettings().setMyLocationButtonEnabled(false);
 
 
-//         LatLng SYDNEY = new LatLng(-33.88,151.21);
-//         LatLng MOUNTAIN_VIEW = new LatLng(37.4, -122.1);
-//
-//
-//
-//        // Move the camera instantly to Sydney with a zoom of 15.
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SYDNEY, 15));
-//
-//        // Zoom in, animating the camera.
-//        googleMap.animateCamera(CameraUpdateFactory.zoomIn());
-//
-//        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-//
-//        // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
-//        CameraPosition cameraPosition = new CameraPosition.Builder()
-//                .target(MOUNTAIN_VIEW)      // Sets the center of the map to Mountain View
-//                .zoom(17)                   // Sets the zoom
-//                .bearing(90)                // Sets the orientation of the camera to east
-//                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
-//                .build();                   // Creates a CameraPosition from the builder
-//        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        //googleMap.setOnMarkerClickListener(new OnMarkerClickListener());
     }
 
     @Override
@@ -225,10 +224,21 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
             case R.id.indoorMap:
                 indoorMap();
                 return true;
+            case R.id.groundOverlaymenu:
+                Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
+                groundOverlay();
+                return true;
+            case R.id.polygonMenu:
+                Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
+                polygonActivity();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+
 
     private void streetView(){
         Intent intent = new Intent(this,StreetView.class);
@@ -260,6 +270,17 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
     }
     private void indoorMap(){
         Intent intent = new Intent(this,IndoorMapActivity.class);
+        startActivity(intent);
+    }
+    private void groundOverlay(){
+        Intent intent = new Intent(this,GroundOverlay.class);
+        Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
+        startActivity(intent);
+    }
+
+    private void polygonActivity(){
+        Intent intent = new Intent(this,PolygonActivity.class);
+        Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
 }
