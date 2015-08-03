@@ -1,10 +1,13 @@
 package com.example.android.eatease_dev_1;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -14,6 +17,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 public class PolygonActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -48,7 +52,8 @@ public class PolygonActivity extends AppCompatActivity implements OnMapReadyCall
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_haloPolygon) {
+            haloPolygonActivity();
             return true;
         }
 
@@ -74,6 +79,16 @@ public class PolygonActivity extends AppCompatActivity implements OnMapReadyCall
                         new LatLng(37.35, -122.0));
 
 // Get back the mutable Polygon
-        com.google.android.gms.maps.model.Polygon polygon = googleMap.addPolygon(rectOptions);
+        Polygon polygon = googleMap.addPolygon(rectOptions
+                .strokeColor(Color.RED)
+                .fillColor(Color.BLUE));
+    }
+
+
+
+    private void  haloPolygonActivity(){
+        Intent intent = new Intent(this,HaloPolygonActivity.class);
+        Toast.makeText(this,"Before Entering to the Halo Polygon ",Toast.LENGTH_SHORT).show();
+        startActivity(intent);
     }
 }
