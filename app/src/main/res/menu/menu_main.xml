@@ -33,5 +33,21 @@
         android:id="@+id/polygonMenu"
         android:title="Polygon"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/circleMenu"
+        android:title="Circle"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/polyLineMenu"
+        android:title="Polyline"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/heatMapMenu"
+        android:title="HeatMap"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/markerClusteringMenu"
+        android:title="Marker Clustering"
+        app:showAsAction="never" />
 
 </menu>

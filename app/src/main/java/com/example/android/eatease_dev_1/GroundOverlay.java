@@ -14,6 +14,7 @@ import com.google.android.gms.maps.SupportStreetViewPanoramaFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -49,12 +50,21 @@ public class GroundOverlay extends ActionBarActivity implements OnMapReadyCallba
         );
         marker.showInfoWindow();
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        LatLng NEWARK = new LatLng(40.714086, -74.228697);
+//        LatLng NEWARK = new LatLng(40.714086, -74.228697);
+//
+//        GroundOverlayOptions newarkMap = new GroundOverlayOptions()
+//                .image(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
+//                .anchor(0, 1)
+//                .position(new LatLng(40.714086, -74.228697), 8600f, 6500f);
+//        googleMap.addGroundOverlay(newarkMap);
 
-        GroundOverlayOptions newarkMap = new GroundOverlayOptions()
+        LatLngBounds newarkBounds = new LatLngBounds(
+                new LatLng(40.712216, -74.22655),       // South west corner
+                new LatLng(40.773941, -74.12544));      // North east corner
+        GroundOverlayOptions newarkMap1 = new GroundOverlayOptions()
                 .image(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
-                .position(NEWARK, 8600f, 6500f);
-        googleMap.addGroundOverlay(newarkMap);
+                .positionFromBounds(newarkBounds);
+        googleMap.addGroundOverlay(newarkMap1);
 
     }
 }

@@ -87,6 +87,46 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.eatease_dev_1.MapsActivity" />
         </activity>
+        <activity
+            android:name=".HaloPolygonActivity"
+            android:label="@string/title_activity_halo_poygon"
+            android:parentActivityName=".PolygonActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.eatease_dev_1.PolygonActivity" />
+        </activity>
+        <activity
+            android:name=".CircleActivity"
+            android:label="@string/title_activity_circle"
+            android:parentActivityName=".MapsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.eatease_dev_1.MapsActivity" />
+        </activity>
+        <activity
+            android:name=".PolyLine"
+            android:label="@string/title_activity_poly_line"
+            android:parentActivityName=".MapsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.eatease_dev_1.MapsActivity" />
+        </activity>
+        <activity
+            android:name=".HeatMapActivity"
+            android:label="@string/title_activity_heat_map"
+            android:parentActivityName=".MapsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.eatease_dev_1.MapsActivity" />
+        </activity>
+        <activity
+            android:name=".MarkerClustering"
+            android:label="@string/title_activity_marker_clustering"
+            android:parentActivityName=".MapsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.eatease_dev_1.MapsActivity" />
+        </activity>
     </application>
 
 </manifest>

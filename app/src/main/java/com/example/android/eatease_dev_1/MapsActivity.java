@@ -193,6 +193,11 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
         googleMap.getUiSettings().setMapToolbarEnabled(true);
         googleMap.getUiSettings().setRotateGesturesEnabled(true);
 
+        Polyline line = googleMap.addPolyline(new PolylineOptions()
+                .add(new LatLng(12.9568, 77.5668), new LatLng(13, 78))
+                .color(Color.BLUE)
+                .zIndex(10)
+                .geodesic(true));
 
     }
 
@@ -231,6 +236,22 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
             case R.id.polygonMenu:
                 Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
                 polygonActivity();
+                return true;
+            case R.id.circleMenu:
+                Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
+                circleActivity();
+                return true;
+            case R.id.polyLineMenu:
+                Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
+                polyLineActivity();
+                return true;
+            case R.id.heatMapMenu:
+                Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
+                heatMapActivity();
+                return true;
+            case R.id.markerClusteringMenu:
+                Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
+                markerClusteringActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -283,4 +304,23 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
         Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
+
+    private void circleActivity(){
+        Intent intent = new Intent(this,CircleActivity.class);
+        startActivity(intent);
+    }
+    private void polyLineActivity() {
+        Intent intent = new Intent(this, PolyLine.class);
+        startActivity(intent);
+    }
+
+    private void heatMapActivity() {
+        Intent intent = new Intent(this, HeatMapActivity.class);
+        startActivity(intent);
+    }
+    private void markerClusteringActivity(){
+        Intent intent = new Intent(this, MarkerClustering.class);
+        startActivity(intent);
+    }
+
 }

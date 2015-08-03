@@ -10,4 +10,9 @@
     <string name="title_activity_indoor_map">IndoorMapActivity</string>
     <string name="title_activity_ground_overlay">GroundOverlay</string>
     <string name="title_activity_polygon">Polygon</string>
+    <string name="title_activity_halo_poygon">HaloPoygonActivity</string>
+    <string name="title_activity_circle">CircleActivity</string>
+    <string name="title_activity_poly_line">PolyLine</string>
+    <string name="title_activity_heat_map">HeatMapActivity</string>
+    <string name="title_activity_marker_clustering">MarkerClustering</string>
 </resources>
