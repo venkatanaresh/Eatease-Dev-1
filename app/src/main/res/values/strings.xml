@@ -15,4 +15,6 @@
     <string name="title_activity_poly_line">PolyLine</string>
     <string name="title_activity_heat_map">HeatMapActivity</string>
     <string name="title_activity_marker_clustering">MarkerClustering</string>
+    <string name="title_activity_location_awareness">LocationAwareness</string>
+    <string name="title_activity_geo_fence">GeoFenceActivity</string>
 </resources>

@@ -253,6 +253,10 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
                 Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
                 markerClusteringActivity();
                 return true;
+            case R.id.locationAwareMenu:
+                Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
+                locationAwareActivity();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -320,6 +324,10 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
     }
     private void markerClusteringActivity(){
         Intent intent = new Intent(this, MarkerClustering.class);
+        startActivity(intent);
+    }
+    private void locationAwareActivity(){
+        Intent intent = new Intent(this, LocationAwareness.class);
         startActivity(intent);
     }
 

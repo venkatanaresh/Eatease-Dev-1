@@ -49,5 +49,9 @@
         android:id="@+id/markerClusteringMenu"
         android:title="Marker Clustering"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/locationAwareMenu"
+        android:title="Location Aware"
+        app:showAsAction="never" />
 
 </menu>
