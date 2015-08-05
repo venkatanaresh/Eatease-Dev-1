@@ -24,7 +24,7 @@ public class FetchAddressIntentService extends IntentService {
 
 
 
-
+    private String addressString = "";
     public FetchAddressIntentService() {
         super("address");
     }
@@ -71,6 +71,7 @@ public class FetchAddressIntentService extends IntentService {
             deliverResultToReceiver(Constants.FAILURE_RESULT, errorMessage);
         } else {
             Address address = addresses.get(0);
+            addressString = address.toString();
             ArrayList<String> addressFragments = new ArrayList<String>();
 
             // Fetch the address lines using getAddressLine,
@@ -80,13 +81,12 @@ public class FetchAddressIntentService extends IntentService {
             }
             Log.i("TAG", "address_found");
             deliverResultToReceiver(Constants.SUCCESS_RESULT,
-                    TextUtils.join(System.getProperty("line.separator"),
-                            addressFragments));
+                    addressString);
         }
     }
 
     private void deliverResultToReceiver(int resultCode, String message) {
-        LocationAwareness.addressUpdate(resultCode,message);
+
         Toast.makeText(this,"Intent Service End",Toast.LENGTH_LONG).show();
     }
 }

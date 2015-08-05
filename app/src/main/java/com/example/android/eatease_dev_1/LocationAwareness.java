@@ -3,6 +3,7 @@ package com.example.android.eatease_dev_1;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 
@@ -13,6 +14,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +26,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import android.content.IntentSender.SendIntentException;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +38,12 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class LocationAwareness extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener,LocationListener {
 
@@ -46,8 +55,6 @@ public class LocationAwareness extends AppCompatActivity implements ConnectionCa
     // Bool to track whether the app is already resolving an error
     private boolean mResolvingError = false;
 
-
-    private String mAddressOutput = "wait";
     private Location mCurrentLocation;
 
     private String mLastUpdateTime;
@@ -57,6 +64,8 @@ public class LocationAwareness extends AppCompatActivity implements ConnectionCa
 
 
     TextView t1,t2,time,lat1,longitude1,address;
+
+    Button b1;
 
 
 
@@ -79,7 +88,7 @@ public class LocationAwareness extends AppCompatActivity implements ConnectionCa
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-
+        //Location request parameters object
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
@@ -91,7 +100,15 @@ public class LocationAwareness extends AppCompatActivity implements ConnectionCa
         lat1 = (TextView) findViewById(R.id.lat1);
         longitude1 = (TextView) findViewById(R.id.long1);
         address = (TextView) findViewById(R.id.address);
-        address.setText("waiting for address");
+        address.setText("Your address is Here");
+        b1 = (Button)findViewById(R.id.getAdderss);
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                address.setText("Waiting For Address");
+                addressUpdate();
+            }
+        });
 
 
     }
@@ -152,11 +169,11 @@ public class LocationAwareness extends AppCompatActivity implements ConnectionCa
         lat1.setText(String.valueOf(mCurrentLocation.getLatitude()));
         longitude1.setText(String.valueOf(mCurrentLocation.getLongitude()));
         time.setText(mLastUpdateTime);
-        Toast.makeText(this,"Time  "+mLastUpdateTime+
-        "/n Latitude  " + String.valueOf(mCurrentLocation.getLatitude()) +
-                        "/n Longitude  "+String.valueOf(mCurrentLocation.getLongitude()),
-          Toast.LENGTH_LONG
-        ).show();
+//        Toast.makeText(this,"Time  "+mLastUpdateTime+
+//        "/n Latitude  " + String.valueOf(mCurrentLocation.getLatitude()) +
+//                        "/n Longitude  "+String.valueOf(mCurrentLocation.getLongitude()),
+//          Toast.LENGTH_LONG
+//        ).show();
 
     }
     @Override
@@ -256,6 +273,7 @@ public class LocationAwareness extends AppCompatActivity implements ConnectionCa
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            geoFenceActivity();
             return true;
         }
 
@@ -273,25 +291,76 @@ public class LocationAwareness extends AppCompatActivity implements ConnectionCa
                 mGoogleApiClient, this);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if ( mGoogleApiClient.isConnected() && (mLastLocation != null) ) {
-            startLocationUpdates();
-            Intent intent = new Intent(this,FetchAddressIntentService.class);
-            intent.putExtra(Constants.LOCATION_DATA_EXTRA,mCurrentLocation);
-            startService(intent);
+
+
+    private void addressUpdate(){
+        b1.setEnabled(false);
+        b1.setClickable(false);
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        String errorMessage = "";
+
+        // Get the location passed to this service through an extra.
+
+
+
+        List<Address> addresses = null;
+
+        try {
+            addresses = geocoder.getFromLocation(
+                    mCurrentLocation.getLatitude(),
+                    mCurrentLocation.getLongitude(),
+                    // In this sample, get just a single address.
+                    1);
+        } catch (IOException ioException) {
+            // Catch network or other I/O problems.
+            errorMessage = "service_not_available";
+            Log.e("TAG", errorMessage, ioException);
+            Toast.makeText(this,"service_not_available",Toast.LENGTH_LONG).show();
+            address.setText("service_not_available");
+            b1.setEnabled(true);
+            b1.setClickable(true);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // Catch invalid latitude or longitude values.
+            errorMessage = "invalid_lat_long_used";
+            Toast.makeText(this,"invalid_lat_long_used",Toast.LENGTH_LONG).show();
+            address.setText("invalid_lat_long_used");
+            b1.setEnabled(true);
+            b1.setClickable(true);
+            Log.e("TAG", errorMessage + ". " +
+                    "Latitude = " + mCurrentLocation.getLatitude() +
+                    ", Longitude = " +
+                    mCurrentLocation.getLongitude(), illegalArgumentException);
         }
+
+        // Handle case where no address was found.
+        if (addresses == null || addresses.size()  == 0) {
+            if (errorMessage.isEmpty()) {
+                address.setText("Sorry no address found");
+                b1.setEnabled(true);
+                b1.setClickable(true);
+
+            }
+
+        } else {
+            Address address1 = addresses.get(0);
+                String str = "";
+                for( int i=0;i<address1.getMaxAddressLineIndex();i++){
+                    str = str+ address1.getAddressLine(i);
+                }
+                address.setText(str);
+                b1.setEnabled(true);
+                b1.setClickable(true);
+
+        }
+
     }
 
-    public static void addressUpdate(int i, String detail){
-
-        Log.i("addressUpdate","addressUpdate");
-      if(i==1){
-          new LocationAwareness().address.setText(detail);
-      }else{
-          new LocationAwareness().address.setText(detail);
-      }
+    private void geoFenceActivity(){
+        Intent intent = new Intent(this,GeoFenceActivity.class);
+        intent.putExtra("currentLocationObject", mCurrentLocation);
+        intent.putExtra("lastLocationObject", mLastLocation);
+        startActivity(intent);
     }
 
 }
