@@ -29,7 +29,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
     /**
      * This constructor is required, and calls the super IntentService(String)
-     * constructor with the name for a worker thread.............
+     * constructor with the name for a worker thread...
      */
     public GeofenceTransitionsIntentService() {
         // Use the TAG to name the worker thread.

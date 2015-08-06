@@ -53,5 +53,9 @@
         android:id="@+id/locationAwareMenu"
         android:title="Location Aware"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/dynamicFenceMenu"
+        android:title="DynamicFence"
+        app:showAsAction="ifRoom" />
 
 </menu>

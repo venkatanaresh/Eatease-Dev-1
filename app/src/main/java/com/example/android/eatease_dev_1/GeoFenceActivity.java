@@ -33,6 +33,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -45,8 +46,10 @@ import java.util.List;
 
 public class GeoFenceActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,ResultCallback<Status>,OnMapReadyCallback {
 
-
+    protected GoogleMap gMap;
+    protected boolean gMapTracker =false;
     protected Location mLastLocation;
+    protected Marker marker;
 
     protected static final String TAG = "creating-and-monitoring-geofences";
 
@@ -94,6 +97,9 @@ public class GeoFenceActivity extends AppCompatActivity implements GoogleApiClie
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
         bar.setIcon(R.mipmap.ic_launcher);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.geo_fence_layout);
+        mapFragment.getMapAsync(this);
 
         mResolvingError = savedInstanceState != null && savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
 
@@ -113,20 +119,7 @@ public class GeoFenceActivity extends AppCompatActivity implements GoogleApiClie
 
         // Get the value of mGeofencesAdded from SharedPreferences. Set to false as a default.
         mGeofencesAdded = mSharedPreferences.getBoolean("com.example.android.eatease_dev_1.GEOFENCES_ADDED_KEY", false);
-        mGeofenceList.add(new Geofence.Builder()
-                // Set the request ID of the geofence. This is a string to identify this
-                // geofence.
-                .setRequestId("First Geofence")
 
-                .setCircularRegion(
-                        mLastLocation.getLatitude(),
-                        mLastLocation.getLongitude(),
-                        100     //distance in meters
-                )
-                .setExpirationDuration(20000)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                        Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build());
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -166,6 +159,21 @@ public class GeoFenceActivity extends AppCompatActivity implements GoogleApiClie
       public void onConnected(Bundle connectionHint) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
+        //building geo fence specification object
+        mGeofenceList.add(new Geofence.Builder()
+                // Set the request ID of the geofence. This is a string to identify this
+                // geofence.
+                .setRequestId("First Geofence")
+
+                .setCircularRegion(
+                        mLastLocation.getLatitude(),
+                        mLastLocation.getLongitude(),
+                        5     //distance in meters
+                )
+                .setExpirationDuration(20000)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                        Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build());
 
     }
 
@@ -289,30 +297,8 @@ public class GeoFenceActivity extends AppCompatActivity implements GoogleApiClie
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap.setMyLocationEnabled(true);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(12.9568, 77.5668), 13));
-        Marker marker = googleMap.addMarker(new MarkerOptions().position(new LatLng(12.9568, 77.5668))
-                        .title("Bangalore")
-                        .snippet("Simple example about Customized Marker")
-                        .draggable(true)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                        .alpha(0.7f)
-                        .flat(true)
-
-        );
-        marker.showInfoWindow();
-        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
-        googleMap.getUiSettings().setCompassEnabled(true);
-        googleMap.getUiSettings().setIndoorLevelPickerEnabled(true);
-        googleMap.getUiSettings().setMapToolbarEnabled(true);
-        googleMap.getUiSettings().setRotateGesturesEnabled(true);
-
-        Polyline line = googleMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(12.9568, 77.5668), new LatLng(13, 78))
-                .color(Color.BLUE)
-                .zIndex(10)
-                .geodesic(true));
+        gMap = googleMap;
+        gMapTracker = true;
 
     }
 
@@ -401,6 +387,28 @@ public class GeoFenceActivity extends AppCompatActivity implements GoogleApiClie
                             R.string.geofences_removed),
                     Toast.LENGTH_SHORT
             ).show();
+            if(mGeofencesAdded && gMapTracker){
+                gMap.setMyLocationEnabled(true);
+                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(LocationAwareness.trackLocation.getLatitude(),LocationAwareness.trackLocation.getLongitude()), 13));
+                marker = gMap.addMarker(new MarkerOptions().position(new LatLng(LocationAwareness.trackLocation.getLatitude(), LocationAwareness.trackLocation.getLongitude()))
+                                .title("Bangalore ,Geo fence")
+                                .snippet("Simple Geo Fence  Marker")
+                );
+                marker.showInfoWindow();
+                gMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                gMap.getUiSettings().setZoomControlsEnabled(true);
+                gMap.getUiSettings().setCompassEnabled(true);
+                gMap.getUiSettings().setIndoorLevelPickerEnabled(true);
+                gMap.getUiSettings().setMapToolbarEnabled(true);
+                gMap.getUiSettings().setRotateGesturesEnabled(true);
+                gMap.getUiSettings().setMapToolbarEnabled(false);
+
+            }
+            else{
+                if(marker != null){
+                marker.remove();
+                }
+            }
         } else {
             // Get the status code for the error and log it using a user-friendly message.
             String errorMessage = GeofenceErrorMessages.getErrorString(this,

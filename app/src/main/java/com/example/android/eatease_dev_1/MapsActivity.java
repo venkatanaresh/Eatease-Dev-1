@@ -57,7 +57,7 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
         bar.setIcon(R.mipmap.ic_launcher);
         setUpMapIfNeeded();
         //code 2
-        GoogleMapOptions options = new GoogleMapOptions().liteMode(true);
+//        GoogleMapOptions options = new GoogleMapOptions().liteMode(true);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -257,6 +257,10 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
                 Toast.makeText(this,"intent raised",Toast.LENGTH_SHORT).show();
                 locationAwareActivity();
                 return true;
+            case R.id.dynamicFenceMenu:
+                Toast.makeText(this,"Dynamic Fence Activity",Toast.LENGTH_SHORT).show();
+                dynamicFenceActivity();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -328,6 +332,10 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
     }
     private void locationAwareActivity(){
         Intent intent = new Intent(this, LocationAwareness.class);
+        startActivity(intent);
+    }
+    private void dynamicFenceActivity() {
+        Intent intent = new Intent(this, DynamicFence.class);
         startActivity(intent);
     }
 

@@ -100,7 +100,7 @@ public class HeatMapActivity extends AppCompatActivity implements OnMapReadyCall
 
 
         //To change the opacity of an existing heatmap
-        mProvider.setOpacity(0.7);
+        mProvider.setOpacity(7.0);
         mOverlay.clearTileCache();
     }
 
