@@ -78,7 +78,7 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
         Button b1 = (Button) findViewById(R.id.button);
         Button b2 = (Button) findViewById(R.id.button2);
         final TextView tv = (TextView) findViewById(R.id.textView);
-        ref = new Firebase("https://androidwithfirebase.firebaseio.com");
+        ref = new Firebase("https://androidwithfirebase.firebaseio.com/weatherInfo");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

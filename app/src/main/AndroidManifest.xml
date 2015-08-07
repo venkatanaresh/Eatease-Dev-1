@@ -7,6 +7,9 @@
         android:minSdkVersion="10"
         android:targetSdkVersion="22" />
 
+    <uses-feature android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -42,12 +45,11 @@
             android:name=".MapsActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_maps"
+            android:parentActivityName=".OrderActivity"
             android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.eatease_dev_1.OrderActivity" />
         </activity>
         <activity
             android:name=".StreetView"
@@ -176,11 +178,38 @@
         </activity>
         <activity
             android:name=".DynamicFence"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_dynamic_fence"
-            android:parentActivityName=".MapsActivity" >
+            android:parentActivityName=".MapsActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.eatease_dev_1.MapsActivity" />
+        </activity>
+        <activity
+            android:name=".OrderActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_order"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".AddItemActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_add_item"
+            android:parentActivityName=".OrderActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.eatease_dev_1.OrderActivity" />
+        </activity>
+        <activity
+            android:name=".DispalyItem"
+            android:label="@string/title_activity_dispaly_item" >
         </activity>
     </application>
 

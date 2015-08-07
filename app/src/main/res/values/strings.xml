@@ -51,4 +51,7 @@
 
     <string name="geofence_transition_notification_text">Click notification to return to app</string>
     <string name="title_activity_dynamic_fence">DynamicFence</string>
+    <string name="title_activity_order">OrderActivity</string>
+    <string name="title_activity_add_item">AddItemActivity</string>
+    <string name="title_activity_dispaly_item">DispalyItem</string>
 </resources>

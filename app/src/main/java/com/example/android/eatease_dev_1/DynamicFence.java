@@ -89,7 +89,7 @@ public class DynamicFence extends ActionBarActivity implements OnMapReadyCallbac
         bar.setDisplayShowHomeEnabled(true);
         bar.setIcon(R.mipmap.ic_launcher);
         //code 2
-//        GoogleMapOptions options = new GoogleMapOptions().liteMode(true);
+        //GoogleMapOptions options = new GoogleMapOptions().liteMode(true);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.dynamic_fence_layout);
         mapFragment.getMapAsync(this);
@@ -391,7 +391,7 @@ public class DynamicFence extends ActionBarActivity implements OnMapReadyCallbac
         if(markerTrackerFlag){
             marker.remove();
         }
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
         marker = gMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude()))
                         .title("Tapped Location By You")
                         .snippet(address)
