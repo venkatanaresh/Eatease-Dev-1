@@ -4,23 +4,25 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.support.v4.app.DialogFragment;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import android.content.IntentSender.SendIntentException;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationListener;
@@ -38,8 +40,19 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class OrderActivity extends AppCompatActivity implements OnMapReadyCallback,ConnectionCallbacks,OnConnectionFailedListener,LocationListener {
+
+    //Marker For Items
+    Marker itemMarker;
+   // ArrayList<Marker> markerList = new ArrayList<>();
+    HashMap<String,String> markerTracer;
+    public static int TRACKER = 0;
 
     private GoogleMap gMap; // Might be null if Google Play services APK is not available.
     private Firebase ref; // Firebase reference
@@ -65,9 +78,10 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
         Firebase.setAndroidContext(this);
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.mipmap.ic_launcher);
+        bar.setIcon(R.mipmap.pizza1);
         //code 2
         //GoogleMapOptions options = new GoogleMapOptions().liteMode(true);
+        markerTracer = new <String,String>HashMap();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.order_layout);
         mapFragment.getMapAsync(this);
@@ -98,13 +112,19 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
          ****************************************************/
 
 
-        ref = new Firebase("https://androidwithfirebase.firebaseio.com");
-        ref.addValueEventListener(new ValueEventListener() {
+        ref = new Firebase(getResources().getString(R.string.firebase_url_items));
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-               // Log.i("For Firebase", (String) dataSnapshot.getValue());
+                if(dataSnapshot.getValue() != null) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        DataSnapshot obj = snapshot;
 
-
+                        //Toast.makeText(getBaseContext(), obj.child("address1").getValue().toString(), Toast.LENGTH_LONG).show();
+                        putMarker(obj);
+                    }
+                }
             }
 
             @Override
@@ -112,11 +132,45 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
 
             }
         });
+        ref.addChildEventListener(new ChildEventListener() {
+            // Retrieve new posts as they are added to the database
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
+                //Toast.makeText(getBaseContext(), snapshot.child("address1").getValue().toString(), Toast.LENGTH_LONG).show();
+                putMarker(snapshot);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+            //... ChildEventListener also defines onChildChanged, onChildRemoved,
+            //    onChildMoved and onCanceled, covered in later sections.
+        });
 
 
         /***************************************************
          * End  of Firebase Stuff
          ****************************************************/
+//        if(getIntent() != null) {
+//                placeMarker();
+//        }
+
     }
 
     @Override
@@ -129,7 +183,10 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
     public void onConnected(Bundle connectionHint) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
+            setCamera(mLastLocation);
             startLocationUpdates();
+
+
         }
     }
     protected void startLocationUpdates() {
@@ -264,9 +321,20 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
         gMap.getUiSettings().setZoomControlsEnabled(true);
         gMap.getUiSettings().setIndoorLevelPickerEnabled(true);
         gMap.getUiSettings().setAllGesturesEnabled(true);
-//        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 13));
+//     gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 17));
         //set onClick Listener
-
+        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                String title = marker.getTitle();
+                String restaurantId = markerTracer.get(title);
+                Intent intent = new Intent(getBaseContext(),DishesActivity.class);
+                intent.putExtra("key",restaurantId);
+                intent.putExtra("position",marker.getPosition());
+                startActivity(intent);
+                return false;
+            }
+        });
     }
 
     private void orderActivity(){
@@ -278,5 +346,36 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
         Intent intent = new Intent(this,MapsActivity.class);
         startActivity(intent);
     }
+
+
+    //Conversion Mechanism between Base64 Image to BitMap
+    private Bitmap decodeBase64(String input)
+    {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
+
+    // Generating Markers on The Map
+    private void putMarker(DataSnapshot data){
+        Double lat = (Double)data.child("latitude").getValue();
+        Double longitude = (Double)data.child("longitude").getValue();
+        itemMarker = gMap.addMarker(new MarkerOptions().position(new LatLng(lat, longitude))
+
+                        .title(data.child("itemname").getValue().toString())
+                        .snippet(data.child("address2").getValue().toString() +
+                                data.child("address1").getValue() +
+                                data.child("address3").getValue())
+
+        );
+        itemMarker.showInfoWindow();
+        markerTracer.put(data.child("itemname").getValue().toString(),data.getKey());
+//        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(data.getLatitude(), data.getLongitude()), 13));
+    }
+
+    private void setCamera(Location location){
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
+    }
+
+
 
 }

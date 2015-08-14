@@ -29,7 +29,7 @@ public class PolygonActivity extends AppCompatActivity implements OnMapReadyCall
         Firebase.setAndroidContext(this);
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.mipmap.ic_launcher);
+        bar.setIcon(R.mipmap.pizza1);;
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.polygonLayout);

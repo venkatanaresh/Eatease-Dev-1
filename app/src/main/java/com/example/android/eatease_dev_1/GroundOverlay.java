@@ -27,7 +27,7 @@ public class GroundOverlay extends ActionBarActivity implements OnMapReadyCallba
         setContentView(R.layout.activity_ground_overlay);
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.mipmap.ic_launcher);
+        bar.setIcon(R.mipmap.pizza1);
         bar.setDisplayHomeAsUpEnabled(true);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

@@ -28,7 +28,7 @@ public class MarkerClustering extends AppCompatActivity implements OnMapReadyCal
         Firebase.setAndroidContext(this);
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.mipmap.ic_launcher);
+        bar.setIcon(R.mipmap.pizza1);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.markerClusteringLayout);

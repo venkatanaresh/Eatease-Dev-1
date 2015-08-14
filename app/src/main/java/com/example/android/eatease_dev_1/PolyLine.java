@@ -27,7 +27,7 @@ public class PolyLine extends AppCompatActivity implements OnMapReadyCallback {
         Firebase.setAndroidContext(this);
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.mipmap.ic_launcher);
+        bar.setIcon(R.mipmap.pizza1);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.polyLineLayout);

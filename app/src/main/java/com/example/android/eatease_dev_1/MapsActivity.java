@@ -54,7 +54,7 @@ public class MapsActivity extends ActionBarActivity implements OnMapReadyCallbac
         Firebase.setAndroidContext(this);
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.mipmap.ic_launcher);
+        bar.setIcon(R.mipmap.pizza1);
         setUpMapIfNeeded();
         //code 2
 //        GoogleMapOptions options = new GoogleMapOptions().liteMode(true);

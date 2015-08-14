@@ -87,8 +87,7 @@ public class DynamicFence extends ActionBarActivity implements OnMapReadyCallbac
         Firebase.setAndroidContext(this);
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.mipmap.ic_launcher);
-        //code 2
+        bar.setIcon(R.mipmap.pizza1);        //code 2
         //GoogleMapOptions options = new GoogleMapOptions().liteMode(true);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.dynamic_fence_layout);

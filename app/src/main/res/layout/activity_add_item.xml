@@ -29,15 +29,9 @@
             android:layout_weight="1"
             android:id="@+id/item_image"
             android:layout_height="match_parent"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/pizza"
+            android:onClick="takeImage"
             android:adjustViewBounds="true" />
-        <Button
-            android:layout_width="100dp"
-            android:text="Upload Image"
-            android:layout_height="wrap_content"
-            android:id="@+id/capture_image"
-            android:layout_gravity="center_vertical"
-            android:onClick="takeImage"/>
     </LinearLayout>
 
     <LinearLayout
@@ -61,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:inputType="number"
+            android:inputType="number|textNoSuggestions"
             android:hint="ENTER ITEM PRICE"
             android:ems="10"
             android:id="@+id/item_price"
@@ -72,6 +66,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:hint="ADDRESS 1"
+            android:inputType="textNoSuggestions"
             android:id="@+id/item_address1"
             android:layout_gravity="center_horizontal"
             android:autoText="true" />
@@ -79,6 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
+            android:inputType="textNoSuggestions"
             android:hint="ADDRESS 2"
             android:id="@+id/item_address2"
             android:layout_gravity="center_horizontal" />
@@ -87,6 +83,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:hint="ADDRESS 3"
+            android:inputType="textNoSuggestions"
             android:id="@+id/item_address3"
             android:layout_gravity="center_horizontal" />
 

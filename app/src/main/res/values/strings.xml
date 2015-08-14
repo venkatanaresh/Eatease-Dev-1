@@ -54,4 +54,8 @@
     <string name="title_activity_order">OrderActivity</string>
     <string name="title_activity_add_item">AddItemActivity</string>
     <string name="title_activity_dispaly_item">DispalyItem</string>
+    <string name="firebase_url">https://androidwithfirebase.firebaseio.com</string>
+    <string name="firebase_url_items">https://androidwithfirebase.firebaseio.com/Details</string>
+    <string name="title_activity_dishes">DishesActivity</string>
+    <string name="keyForEatease">33:1E:0D:3F:8D:75:57:E2:07:80:C3:00:21:B3:76:5E:E2:B4:D4:86;com.azureiken.android.eatease</string>
 </resources>

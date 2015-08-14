@@ -21,7 +21,7 @@ public class StreetView extends ActionBarActivity implements OnStreetViewPanoram
         setContentView(R.layout.activity_street_view);
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.mipmap.ic_launcher);
+        bar.setIcon(R.mipmap.pizza1);
         bar.setDisplayHomeAsUpEnabled(true);
 
         SupportStreetViewPanoramaFragment streetViewPanoramaFragment = (SupportStreetViewPanoramaFragment) getSupportFragmentManager()

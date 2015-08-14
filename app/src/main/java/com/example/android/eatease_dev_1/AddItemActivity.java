@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
@@ -38,13 +41,19 @@ import com.google.android.gms.location.LocationServices;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
 public class AddItemActivity extends AppCompatActivity implements ConnectionCallbacks,OnConnectionFailedListener,LocationListener {
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    protected String  geoaddress = "";
+    private Uri fileUri;
     private Firebase ref; // Firebase reference
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private String imageBaseFromat = null ;
@@ -67,6 +76,7 @@ public class AddItemActivity extends AppCompatActivity implements ConnectionCall
     private EditText itemName,itemPrice,itemAddress1,itemAddress2,itemAddress3;
     private ImageView itemImage;
     private Button itemUpload,itemSubmit;
+    private String addressLine1,addressLine2,addressLine3,ItemName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +85,7 @@ public class AddItemActivity extends AppCompatActivity implements ConnectionCall
         Firebase.setAndroidContext(this);
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.mipmap.ic_launcher);
+        bar.setIcon(R.mipmap.pizza1);
         mResolvingError = savedInstanceState != null
                 && savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
 
@@ -97,9 +107,10 @@ public class AddItemActivity extends AppCompatActivity implements ConnectionCall
         itemAddress2 = (EditText) findViewById(R.id.item_address2);
         itemAddress3 = (EditText) findViewById(R.id.item_address3);
         itemImage = (ImageView) findViewById(R.id.item_image);
-        itemUpload = (Button) findViewById(R.id.capture_image);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        itemImage.setImageBitmap(bm);
         itemSubmit = (Button) findViewById(R.id.submit_details);
-        itemUpload.setOnClickListener(new View.OnClickListener() {
+        itemImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -127,20 +138,20 @@ public class AddItemActivity extends AppCompatActivity implements ConnectionCall
          ****************************************************/
 
 
-        ref = new Firebase("https://androidwithfirebase.firebaseio.com/Details");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Log.i("For Firebase", (String) dataSnapshot.getValue());
-
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+        ref = new Firebase(getResources().getString(R.string.firebase_url_items));
+//        ref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+////                 Log.i("For Firebase", (String) dataSnapshot.getValue());
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(FirebaseError firebaseError) {
+//
+//            }
+//        });
 
 
         /***************************************************
@@ -165,6 +176,7 @@ public class AddItemActivity extends AppCompatActivity implements ConnectionCall
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
             startLocationUpdates();
+            addressUpdate(mLastLocation);
         }
     }
     protected void startLocationUpdates() {
@@ -257,26 +269,43 @@ public class AddItemActivity extends AppCompatActivity implements ConnectionCall
 
     private void itemDetailsSubmit(){
         Toast.makeText(this,itemName.getText(), Toast.LENGTH_SHORT).show();
-        if(imageBaseFromat !=null && itemName != null && itemPrice != null &&itemAddress1 != null &&itemAddress2 != null
+        if(imageBaseFromat !="" && itemName != null&& itemPrice != null &&itemAddress1 != null &&itemAddress2 != null
                 &&itemAddress3 != null
                 &&mCurrentLocation!= null){
-            Map<String, String> post1 = new HashMap<String, String>();
+            Toast.makeText(this,"Your Item Added Successfully", Toast.LENGTH_SHORT).show();
+            int tempPrice = Integer.parseInt(String.valueOf(itemPrice.getText()));
+
+            Map<String, Object> post1 = new HashMap<String, Object>();
             post1.put("address1", itemAddress1.getText().toString());
             post1.put("address2", itemAddress2.getText().toString());
             post1.put("address3", itemAddress3.getText().toString());
             post1.put("itemname", itemName.getText().toString());
-            post1.put("itemprice", itemPrice.getText().toString());
-            post1.put("latitude", String.valueOf(mCurrentLocation.getLatitude()));
-            post1.put("longitude", String.valueOf(mCurrentLocation.getLongitude()));
+            post1.put("itemprice", tempPrice);
+            post1.put("latitude", (Double)mCurrentLocation.getLatitude());
+            post1.put("longitude",(Double) mCurrentLocation.getLongitude());
             post1.put("time", DateFormat.getTimeInstance().format(new Date()));
             post1.put("image", imageBaseFromat);
+            ItemName = itemName.getText().toString();
             ref.push().setValue(post1);
             itemAddress1.setText("");
             itemAddress2.setText("");
             itemAddress3.setText("");
             itemName.setText("");
             itemPrice.setText("");
+            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            itemImage.setImageBitmap(bm);
             //itemImage.setImageBitmap(Bitmap.createBitmap());
+            Intent intent = new Intent(this,OrderActivity.class);
+            intent.putExtra("latitude",mCurrentLocation.getLatitude());
+            intent.putExtra("longitude",mCurrentLocation.getLongitude());
+            intent.putExtra("addressLine1",addressLine1);
+            intent.putExtra("addressLine2",addressLine2);
+            intent.putExtra("addressLine3",addressLine3);
+            intent.putExtra("ItemName",ItemName);
+            intent.putExtra("flag_for_marker",1);
+            intent.putExtra("methodName","placeMarker");
+            OrderActivity.TRACKER = 1;
+            //startActivity(intent);
 
         }
         else{
@@ -322,5 +351,74 @@ public class AddItemActivity extends AppCompatActivity implements ConnectionCall
     {
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
+
+    private void addressUpdate(Location location){
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        String errorMessage = "";
+
+        // Get the location passed to this service through an extra.
+
+
+
+        List<Address> addresses = null;
+
+        try {
+            addresses = geocoder.getFromLocation(
+                    location.getLatitude(),
+                    location.getLongitude(),
+                    // In this sample, get just a single address.
+                    1);
+        } catch (IOException ioException) {
+            // Catch network or other I/O problems.
+            errorMessage = "service_not_available";
+            Log.e("TAG", errorMessage, ioException);
+            Toast.makeText(this, "service_not_available", Toast.LENGTH_LONG).show();
+
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // Catch invalid latitude or longitude values.
+            errorMessage = "invalid_lat_long_used";
+            Toast.makeText(this,"invalid_lat_long_used",Toast.LENGTH_LONG).show();
+            Log.e("TAG", errorMessage + ". " +
+                    "Latitude = " + location.getLatitude() +
+                    ", Longitude = " +
+                    location.getLongitude(), illegalArgumentException);
+        }
+
+        // Handle case where no address was found.
+        if (addresses == null || addresses.size()  == 0) {
+            if (errorMessage.isEmpty()) {
+                //Toast.makeText(this,"Sorry Address Not Available",Toast.LENGTH_LONG).show();
+                geoaddress = "Sorry Address Not Available";
+
+            }
+
+        } else {
+            Address address1 = addresses.get(0);
+            String str = "";
+            Log.e("Address",address1.toString());
+            for( int i=0;i<address1.getMaxAddressLineIndex();i++){
+                str = str+ address1.getAddressLine(i);
+                if(i==0){
+                itemAddress1.setText(address1.getAddressLine(i));
+                    addressLine1 = address1.getAddressLine(i);
+                }
+                if(i==1){
+                itemAddress2.setText(address1.getAddressLine(i));
+                    addressLine2 = address1.getAddressLine(i);
+                }
+                if(i==2) {
+                    itemAddress3.setText(address1.getAddressLine(i));
+                    addressLine3 = address1.getAddressLine(i);
+                }
+
+            }
+            geoaddress = str;
+            //Toast.makeText(this,address1.toString(), Toast.LENGTH_LONG).show();
+
+
+        }
+
     }
 }

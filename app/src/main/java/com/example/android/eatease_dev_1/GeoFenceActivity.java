@@ -96,7 +96,7 @@ public class GeoFenceActivity extends AppCompatActivity implements GoogleApiClie
         Firebase.setAndroidContext(this);
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.mipmap.ic_launcher);
+        bar.setIcon(R.mipmap.pizza1);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.geo_fence_layout);
         mapFragment.getMapAsync(this);
